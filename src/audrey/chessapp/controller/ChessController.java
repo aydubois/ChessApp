@@ -1,11 +1,11 @@
 package audrey.chessapp.controller;
 
-import audrey.chessapp.model.Partie;
-import audrey.chessapp.model.Plateau;
+import audrey.chessapp.model.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class ChessController implements Initializable {
-
+    private final String backgroundColorSelected = "-fx-background-color:#b092b0;";
+    private final String backgroundColorWhite = "-fx-background-color:white;";
+    private final String backgroundColorGrey = "-fx-background-color:grey;";
     @FXML
     private GridPane    gridPanePlateau;
     @FXML
@@ -31,15 +33,16 @@ public class ChessController implements Initializable {
                         paneCase07,paneCase17,paneCase27,paneCase37,paneCase47,paneCase57,paneCase67,paneCase77;
     private ArrayList<Pane> panes;
     @FXML
-    private ImageView   imageViewTourNoir1, imageViewTourNoir2, imageViewTourBlanc1, imageViewTourBlanc2,
-                        imageViewCavalierNoir1, imageViewCavalierNoir2, imageViewCavalierBlanc1, imageViewCavalierBlanc2,
-                        imageViewFouNoir1, imageViewFouNoir2,imageViewFouBlanc1,imageViewFouBlanc2,
-                        imageViewReineNoir, imageViewReineBlanc, imageViewRoiNoir, imageViewRoiBlanc,
-                        imageViewPionNoir1,imageViewPionNoir2,imageViewPionNoir3,imageViewPionNoir4,
-                        imageViewPionNoir5,imageViewPionNoir6,imageViewPionNoir7,imageViewPionNoir8,
-                        imageViewPionBlanc1,imageViewPionBlanc2,imageViewPionBlanc3,imageViewPionBlanc4,
-                        imageViewPionBlanc5,imageViewPionBlanc6,imageViewPionBlanc7,imageViewPionBlanc8;
+    private ImageView   imageView00,imageView10,imageView20,imageView30,imageView40,imageView50,imageView60,imageView70,
+                        imageView01,imageView11,imageView21,imageView31,imageView41,imageView51,imageView61,imageView71,
+                        imageView02,imageView12,imageView22,imageView32,imageView42,imageView52,imageView62,imageView72,
+                        imageView03,imageView13,imageView23,imageView33,imageView43,imageView53,imageView63,imageView73,
+                        imageView04,imageView14,imageView24,imageView34,imageView44,imageView54,imageView64,imageView74,
+                        imageView05,imageView15,imageView25,imageView35,imageView45,imageView55,imageView65,imageView75,
+                        imageView06,imageView16,imageView26,imageView36,imageView46,imageView56,imageView66,imageView76,
+                        imageView07,imageView17,imageView27,imageView37,imageView47,imageView57,imageView67,imageView77;
 
+    private ArrayList<ImageView> imageViews;
 
     @FXML
     private Button buttonAnnuler, buttonNouvellePartie, buttonQuitter;
@@ -60,43 +63,105 @@ public class ChessController implements Initializable {
                 paneCase05,paneCase15,paneCase25,paneCase35,paneCase45,paneCase55,paneCase65,paneCase75,
                 paneCase06,paneCase16,paneCase26,paneCase36,paneCase46,paneCase56,paneCase66,paneCase76,
                 paneCase07,paneCase17,paneCase27,paneCase37,paneCase47,paneCase57,paneCase67,paneCase77));
+        imageViews = new ArrayList<>(Arrays.asList(imageView00,imageView10,imageView20,imageView30,imageView40,imageView50,imageView60,imageView70,
+                imageView01,imageView11,imageView21,imageView31,imageView41,imageView51,imageView61,imageView71,
+                imageView02,imageView12,imageView22,imageView32,imageView42,imageView52,imageView62,imageView72,
+                imageView03,imageView13,imageView23,imageView33,imageView43,imageView53,imageView63,imageView73,
+                imageView04,imageView14,imageView24,imageView34,imageView44,imageView54,imageView64,imageView74,
+                imageView05,imageView15,imageView25,imageView35,imageView45,imageView55,imageView65,imageView75,
+                imageView06,imageView16,imageView26,imageView36,imageView46,imageView56,imageView66,imageView76,
+                imageView07,imageView17,imageView27,imageView37,imageView47,imageView57,imageView67,imageView77));
         this.addEventNewGame();
     }
 
     private void addEventNewGame(){
+
         this.buttonNouvellePartie.setOnMouseClicked(mouseEvent -> {
             this.partie.newGame();
-            this.plateau = this.partie.getPlateau();
-            if(this.partie.getJoueurActuel() == Partie.joueurs.BLANC)
-                this.labelEquipe.setText("Blancs");
-            else
-                this.labelEquipe.setText("Noirs");
+            this.changeLabel();
             this.addEventClickCase();
         });
     }
 
     private void addEventClickCase(){
         for(Pane pane : panes){
-            System.out.println(pane);
             pane.setOnMouseClicked(mouseEvent -> {
-                String name = pane.getId();
-                String[] nameSplit = name.split("");
-                int row =Integer.parseInt(nameSplit[nameSplit.length-2]);
-                int column =Integer.parseInt(nameSplit[nameSplit.length-1]);
-                // Le joueur peut-il selectionner la case ?
-                // oui si
-                /**
-                 * Aucune case déjà selectionnée
-                 * Si même case déjà selectionnée -> déselection
-                 * Case avec piece du même joueur
-                 */
+                boolean selectedOk = this.partie.trySelected(pane.getId());
 
-                // Si selection ok
-                /**
-                 * case->setSelect(true)
-                 * pane.setBackground()
-                 */
+                //envoi de l'evenement à la partie -> c'est elle qui gère ce qu'elle doit faire.
+                Deplacement deplacement = this.partie.clickOnCase(pane.getId());
+                System.out.println(deplacement);
+                if(deplacement != null ){
+                    //REcherche de l'image
+                    String urlName = deplacement.getPieceDeplacee().getUrlImage();
+                    System.out.println("url image "+ urlName);
+                    //recherche de la case depart
+                    Case caseDepart = deplacement.getCaseDepart();
+                    for(ImageView imageV : imageViews){
+                        if(imageV.getId().equals("imageView"+caseDepart.getColumn()+""+caseDepart.getRow())){
+                            imageV.setImage(null);
+                            break;
+                        }
+                    }
+                    //recherche de la case final
+                    Case caseFinal = deplacement.getCaseFinal();
+                    for(ImageView imageV : imageViews){
+                        if(imageV.getId().equals("imageView"+caseFinal.getColumn()+""+caseFinal.getRow())){
+                            imageV.setImage(new Image(getClass().getResource(urlName).toExternalForm()));
+                            break;
+                        }
+                    }
+                    // recherche pane depart pour supprimer le background_selected
+                    for(Pane paneD : panes){
+                        if(paneD.getId().equals("paneCase"+caseDepart.getColumn()+""+caseDepart.getRow())){
+                            this.changeBackground(paneD, false);
+                            break;
+                        }
+                    }
+                    this.changeLabel();
+                }else{
+                    System.out.println("blah");
+                    this.changeBackground(pane, selectedOk);
+                }
             });
         }
+    }
+
+    private void changeBackground(Pane pane, boolean selectedOk){
+        if(selectedOk){
+            pane.setStyle(backgroundColorSelected);
+        }else{
+            //Verifier que la couleur est bien celle de base (si jamais une case était selectionnée puis déselectionnée)
+            int row = this.getRow(pane.getId());
+            int column = this.getColumn(pane.getId());
+            if(row%2 == 0 && column%2 == 0 && pane.getStyle() != backgroundColorWhite){
+                pane.setStyle(backgroundColorWhite);
+            }else
+            if(row%2 == 0 && column%2 != 0 && pane.getStyle() != backgroundColorGrey){
+                pane.setStyle(backgroundColorGrey);
+            }else
+            if(row%2 != 0 && column%2 == 0 && pane.getStyle() != backgroundColorGrey){
+                pane.setStyle(backgroundColorGrey);
+            }else
+            if(row%2 != 0 && column%2 != 0 && pane.getStyle() != backgroundColorWhite){
+                pane.setStyle(backgroundColorWhite);
+            }
+        }
+    }
+    private int getRow(String name){
+        String[] nameSplit = name.split("");
+        return Integer.parseInt(nameSplit[nameSplit.length-1]);
+    }
+    private int getColumn(String name){
+        String[] nameSplit = name.split("");
+        return Integer.parseInt(nameSplit[nameSplit.length-2]);
+
+    }
+
+    private void changeLabel(){
+        if(this.partie.getJoueurActuel() == Partie.joueurs.BLANC)
+            this.labelEquipe.setText("Blancs");
+        else
+            this.labelEquipe.setText("Noirs");
     }
 }
