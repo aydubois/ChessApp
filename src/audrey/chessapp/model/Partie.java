@@ -8,7 +8,7 @@ public class Partie {
     private ArrayList<Deplacement> deplacements = new ArrayList<>();
     private joueurs joueurActuel;
     public enum joueurs {BLANC, NOIR};
-
+    public boolean theEnd = false;
     public void newGame(){
         this.plateau.initBord();
         joueurActuel = joueurs.BLANC;
@@ -30,6 +30,10 @@ public class Partie {
         return plateau;
     }
 
+    public boolean isTheEnd() {
+        return theEnd;
+    }
+
     public Deplacement clickOnCase(String idPane){
         int row = this.getRow(idPane);
         int column = this.getColumn(idPane);
@@ -37,8 +41,11 @@ public class Partie {
         //envoi au plateau la case cliquée
         Deplacement deplacement = this.plateau.actionOnCase(row,column, this.joueurActuel);
         if(deplacement != null){
+            this.theEnd = this.plateau.isTheEnd();
             deplacements.add(deplacement);
-            this.changeJoueur();
+            if(!this.theEnd){
+                this.changeJoueur();
+            }
         }
         return deplacement;
     }

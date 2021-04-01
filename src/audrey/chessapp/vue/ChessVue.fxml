@@ -429,7 +429,7 @@
             <Font name="Tahoma" size="24.0" />
          </font>
       </Label>
-      <Label layoutX="873.0" layoutY="251.0" text="Au tour des :">
+      <Label fx:id="labelTitle" layoutX="873.0" layoutY="251.0" text="Au tour des :">
          <font>
             <Font size="18.0" />
          </font>

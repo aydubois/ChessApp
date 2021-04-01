@@ -1,13 +1,14 @@
 package audrey.chessapp.controller;
 
 import audrey.chessapp.model.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -48,6 +49,8 @@ public class ChessController implements Initializable {
     private Button buttonAnnuler, buttonNouvellePartie, buttonQuitter;
     @FXML
     private Label labelEquipe;
+    @FXML
+    private Label labelTitle;
 
 
     private Partie partie = new Partie();
@@ -119,6 +122,9 @@ public class ChessController implements Initializable {
                         }
                     }
                     this.changeLabel();
+                    if(this.partie.isTheEnd()){
+                        this.endOfGame();
+                    }
                 }else{
                     System.out.println("blah");
                     this.changeBackground(pane, selectedOk);
@@ -163,5 +169,11 @@ public class ChessController implements Initializable {
             this.labelEquipe.setText("Blancs");
         else
             this.labelEquipe.setText("Noirs");
+    }
+
+    private void endOfGame(){
+        labelTitle.setText("GAGNANT : ");
+        changeLabel();
+        //TODO : Supprimer les evenement sur les pane.
     }
 }

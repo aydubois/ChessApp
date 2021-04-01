@@ -7,7 +7,7 @@ public class Plateau {
     private ArrayList<Piece> piecesBlanches = new ArrayList<>();
     private ArrayList<Piece> piecesNoires = new ArrayList<>();
     private Case caseSelected = null;
-
+    private boolean theEnd = false;
     private enum namePiece {TOUR,CAVALIER,FOU,REINE,ROI,PION};
 
     public void initBord(){
@@ -103,6 +103,10 @@ public class Plateau {
         return caseSelected;
     }
 
+    public boolean isTheEnd() {
+        return theEnd;
+    }
+
     public Deplacement actionOnCase(int row, int column, Partie.joueurs joueurActuel){
         Case caseClicked = null;
         for(Case oneCase : cases){
@@ -157,7 +161,12 @@ public class Plateau {
                     //ne rien faire si les 2 pieces sont du meme joueur
                     return null;
                 }
+                String[] namePieceSplit = caseClicked.getPiece().getName().split(" ");
+                if("ROI".equals(namePieceSplit[0])){
+                    //Fin de partie
+                    this.theEnd = true;
 
+                }
                 Deplacement deplacement = new Deplacement(caseSelected.getPiece(), caseSelected, caseClicked);
                 caseSelected.setEmpty(true);
                 caseClicked.setPiece(caseSelected.getPiece());
