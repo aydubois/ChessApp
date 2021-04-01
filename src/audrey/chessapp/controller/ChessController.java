@@ -1,14 +1,12 @@
 package audrey.chessapp.controller;
 
 import audrey.chessapp.model.*;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -21,8 +19,8 @@ public class ChessController implements Initializable {
     private final String backgroundColorSelected = "-fx-background-color:#b092b0;";
     private final String backgroundColorWhite = "-fx-background-color:white;";
     private final String backgroundColorGrey = "-fx-background-color:grey;";
-    @FXML
-    private GridPane    gridPanePlateau;
+
+
     @FXML
     private Pane        paneCase00,paneCase10,paneCase20,paneCase30,paneCase40,paneCase50,paneCase60,paneCase70,
                         paneCase01,paneCase11,paneCase21,paneCase31,paneCase41,paneCase51,paneCase61,paneCase71,
@@ -75,6 +73,8 @@ public class ChessController implements Initializable {
                 imageView06,imageView16,imageView26,imageView36,imageView46,imageView56,imageView66,imageView76,
                 imageView07,imageView17,imageView27,imageView37,imageView47,imageView57,imageView67,imageView77));
         this.addEventNewGame();
+
+        this.addEventQuitGame();
     }
 
     private void addEventNewGame(){
@@ -82,52 +82,61 @@ public class ChessController implements Initializable {
         this.buttonNouvellePartie.setOnMouseClicked(mouseEvent -> {
             this.partie.newGame();
             this.changeLabel();
-            this.addEventClickCase();
+            //Placement des images
+            //Ajout des evenement seulement s'il n'existent pas déjà
+            if(paneCase00.getOnMouseClicked() == null)
+                this.addEventClickCase();
+            else // replacement des pieces uniquement si une partie a deja ete lancée
+                this.initPiecesOnBoard();
         });
     }
 
     private void addEventClickCase(){
         for(Pane pane : panes){
-            pane.setOnMouseClicked(mouseEvent -> {
-                boolean selectedOk = this.partie.trySelected(pane.getId());
 
-                //envoi de l'evenement à la partie -> c'est elle qui gère ce qu'elle doit faire.
-                Deplacement deplacement = this.partie.clickOnCase(pane.getId());
-                System.out.println(deplacement);
-                if(deplacement != null ){
-                    //REcherche de l'image
-                    String urlName = deplacement.getPieceDeplacee().getUrlImage();
-                    System.out.println("url image "+ urlName);
-                    //recherche de la case depart
-                    Case caseDepart = deplacement.getCaseDepart();
-                    for(ImageView imageV : imageViews){
-                        if(imageV.getId().equals("imageView"+caseDepart.getColumn()+""+caseDepart.getRow())){
-                            imageV.setImage(null);
-                            break;
+            pane.setOnMouseClicked(mouseEvent -> {
+                if(!this.partie.isTheEnd()){
+
+                    boolean selectedOk = this.partie.trySelected(pane.getId());
+
+                    //envoi de l'evenement à la partie -> c'est elle qui gère ce qu'elle doit faire.
+                    Deplacement deplacement = this.partie.clickOnCase(pane.getId());
+                    System.out.println(deplacement);
+                    if(deplacement != null ){
+                        //REcherche de l'image
+                        String urlName = deplacement.getPieceDeplacee().getUrlImage();
+                        System.out.println("url image "+ urlName);
+                        //recherche de la case depart
+                        Case caseDepart = deplacement.getCaseDepart();
+                        for(ImageView imageV : imageViews){
+                            if(imageV.getId().equals("imageView"+caseDepart.getColumn()+""+caseDepart.getRow())){
+                                imageV.setImage(null);
+                                break;
+                            }
                         }
-                    }
-                    //recherche de la case final
-                    Case caseFinal = deplacement.getCaseFinal();
-                    for(ImageView imageV : imageViews){
-                        if(imageV.getId().equals("imageView"+caseFinal.getColumn()+""+caseFinal.getRow())){
-                            imageV.setImage(new Image(getClass().getResource(urlName).toExternalForm()));
-                            break;
+                        //recherche de la case final
+                        Case caseFinal = deplacement.getCaseFinal();
+                        for(ImageView imageV : imageViews){
+                            if(imageV.getId().equals("imageView"+caseFinal.getColumn()+""+caseFinal.getRow())){
+                                imageV.setImage(new Image(getClass().getResource(urlName).toExternalForm()));
+                                break;
+                            }
                         }
-                    }
-                    // recherche pane depart pour supprimer le background_selected
-                    for(Pane paneD : panes){
-                        if(paneD.getId().equals("paneCase"+caseDepart.getColumn()+""+caseDepart.getRow())){
-                            this.changeBackground(paneD, false);
-                            break;
+                        // recherche pane depart pour supprimer le background_selected
+                        for(Pane paneD : panes){
+                            if(paneD.getId().equals("paneCase"+caseDepart.getColumn()+""+caseDepart.getRow())){
+                                this.changeBackground(paneD, false);
+                                break;
+                            }
                         }
+                        this.changeLabel();
+                        if(this.partie.isTheEnd()){
+                            this.endOfGame();
+                        }
+                    }else{
+                        System.out.println("blah");
+                        this.changeBackground(pane, selectedOk);
                     }
-                    this.changeLabel();
-                    if(this.partie.isTheEnd()){
-                        this.endOfGame();
-                    }
-                }else{
-                    System.out.println("blah");
-                    this.changeBackground(pane, selectedOk);
                 }
             });
         }
@@ -174,6 +183,69 @@ public class ChessController implements Initializable {
     private void endOfGame(){
         labelTitle.setText("GAGNANT : ");
         changeLabel();
-        //TODO : Supprimer les evenement sur les pane.
+
+    }
+
+    private void initPiecesOnBoard(){
+        for(ImageView imageV : imageViews){
+            String name = "";
+            int row = getRow(imageV.getId());
+            int column = getColumn(imageV.getId());
+            switch (row){
+                case 0 :
+                    if(column == 0 || column == 7){
+                        name =  "black_rook.png";
+                    }
+                    if(column == 1 || column == 6){
+                        name = "black_knight.png";
+                    }
+                    if(column== 2 || column == 5){
+                        name = "black_bishop.png";
+                    }
+                    if(column == 3){
+                        name = "black_queen.png";
+                    }
+                    if(column == 4){
+                        name ="black_king.png";
+                    }
+                    break;
+                case 1 :
+                    name = "black_pawn.png";
+                    break;
+                case 6 :
+                    name = "white_pawn.png";
+                    break;
+                case 7 :
+                    if(column== 0 || column == 7){
+                        name =  "white_rook.png";
+                    }
+                    if(column == 1 ||column == 6){
+                        name = "white_knight.png";
+                    }
+                    if(column == 2 || column == 5){
+                        name = "white_bishop.png";
+                    }
+                    if(column == 3){
+                        name = "white_queen.png";
+                    }
+                    if(column == 4){
+                        name ="white_king.png";
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if("".equals(name)){
+                //Si vide -> aucune piece
+                imageV.setImage(null);
+            }else{
+                imageV.setImage(new Image(getClass().getResource("../images/"+name).toExternalForm()));
+            }
+
+        }
+    }
+
+    private void addEventQuitGame(){
+        buttonQuitter.setOnMouseClicked(event->{System.exit(0);});
     }
 }

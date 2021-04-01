@@ -2,17 +2,19 @@ package audrey.chessapp.model;
 
 import java.util.ArrayList;
 
+import static java.lang.System.*;
+
 public class Plateau {
-    private ArrayList<Case> cases = new ArrayList<>();
-    private ArrayList<Piece> piecesBlanches = new ArrayList<>();
-    private ArrayList<Piece> piecesNoires = new ArrayList<>();
+    private final ArrayList<Case> cases = new ArrayList<>();
+    private final ArrayList<Piece> piecesBlanches = new ArrayList<>();
+    private final ArrayList<Piece> piecesNoires = new ArrayList<>();
     private Case caseSelected = null;
     private boolean theEnd = false;
-    private enum namePiece {TOUR,CAVALIER,FOU,REINE,ROI,PION};
 
     public void initBord(){
         this.createAllBoxes();
         this.createAllPieces();
+        this.theEnd = false;
     }
 
     public void getPotentialMoves(){
@@ -79,14 +81,14 @@ public class Plateau {
                     if(oneCase.getColumn() == 3){
                         name = "REINE BLANC ";
                     }
-                    if(oneCase.getColumn() == 3){
+                    if(oneCase.getColumn() == 4){
                         name = "ROI BLANC ";
                     }
                     break;
                 default:
                     break;
             }
-            if(!"".equals(name) && !"".equals(color)){
+            if(!"".equals(name) && color != null){
                 Piece piece = new Piece(name, color, oneCase);
                 oneCase.setEmpty(false);
                 oneCase.setPiece(piece);
@@ -115,14 +117,13 @@ public class Plateau {
                 break;
             }
         }
-        System.out.println("Case cliquée : "+caseClicked.getColumn()+""+caseClicked.getRow());
         if(caseClicked == null){
-            System.out.println("ERROR ===> La case cliquée n'existe pas.");
+            out.println("ERROR ===> La case cliquée n'existe pas.");
             return null;
         }
         //Si aucune case sélectionnée
         if(caseSelected == null){
-            System.out.println("aucune case selectionne");
+            out.println("aucune case selectionne");
             //Vérification que la case cliquée n'est pas vide
             if(caseClicked.isEmpty()){
                 //ne rien faire si la case est vide.
@@ -138,11 +139,11 @@ public class Plateau {
         }
         //Si une case est sélectionnée
         else{
-            System.out.println("CaseSelectionne --> "+caseSelected.getColumn()+""+ caseSelected.getRow());
+            out.println("CaseSelectionne --> "+caseSelected.getColumn()+""+ caseSelected.getRow());
             //1er cas -> la case est vide deplacement de la piece
             if(caseClicked.isEmpty()){
-                System.out.println("case selected url piece--> "+caseSelected.getPiece().getUrlImage());
-                Deplacement deplacement = new Deplacement(caseSelected.getPiece(), caseSelected, caseClicked);
+                out.println("case selected url piece--> "+caseSelected.getPiece().getUrlImage());
+                Deplacement deplacement = new Deplacement(caseSelected.getPiece(),null, caseSelected, caseClicked);
                 caseClicked.setEmpty(false);
                 caseSelected.setEmpty(true);
                 caseClicked.setPiece(caseSelected.getPiece());
@@ -167,7 +168,7 @@ public class Plateau {
                     this.theEnd = true;
 
                 }
-                Deplacement deplacement = new Deplacement(caseSelected.getPiece(), caseSelected, caseClicked);
+                Deplacement deplacement = new Deplacement(caseSelected.getPiece(),caseClicked.getPiece(), caseSelected, caseClicked);
                 caseSelected.setEmpty(true);
                 caseClicked.setPiece(caseSelected.getPiece());
                 caseSelected.setPiece(null);

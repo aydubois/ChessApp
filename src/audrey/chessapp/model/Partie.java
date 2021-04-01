@@ -9,8 +9,11 @@ public class Partie {
     private joueurs joueurActuel;
     public enum joueurs {BLANC, NOIR};
     public boolean theEnd = false;
+
+
     public void newGame(){
         this.plateau.initBord();
+        this.theEnd = false;
         joueurActuel = joueurs.BLANC;
     }
 
@@ -35,6 +38,7 @@ public class Partie {
     }
 
     public Deplacement clickOnCase(String idPane){
+
         int row = this.getRow(idPane);
         int column = this.getColumn(idPane);
         System.out.println("Joueur actuel : "+this.joueurActuel);

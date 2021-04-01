@@ -2,6 +2,7 @@ package audrey.chessapp.model;
 
 public class Deplacement {
     private final Piece pieceDeplacee;
+    private final Piece pieceMangee;
     private final Case caseDepart;
     private final Case caseFinal;
 
@@ -13,8 +14,9 @@ public class Deplacement {
         return caseFinal;
     }
 
-    public Deplacement(Piece pieceDeplacee, Case caseDepart, Case caseFinal){
+    public Deplacement(Piece pieceDeplacee, Piece pieceMangee,Case caseDepart, Case caseFinal){
         this.pieceDeplacee = pieceDeplacee;
+        this.pieceMangee = pieceMangee;
         this.caseDepart = caseDepart;
         this.caseFinal = caseFinal;
     }
