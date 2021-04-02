@@ -17,27 +17,16 @@ public class Partie {
         joueurActuel = joueurs.BLANC;
     }
 
-    public void createMove(){
-
-    }
-
-    public void cancelMove(){
-
-    }
 
     public joueurs getJoueurActuel() {
         return joueurActuel;
-    }
-
-    public Plateau getPlateau() {
-        return plateau;
     }
 
     public boolean isTheEnd() {
         return theEnd;
     }
 
-    public Deplacement clickOnCase(String idPane){
+    public Deplacement clickOnCase(String idPane){ // == createMove()
 
         int row = this.getRow(idPane);
         int column = this.getColumn(idPane);

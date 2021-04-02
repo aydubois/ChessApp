@@ -212,55 +212,9 @@ public class Plateau {
                     return deplacement;
                 }
             }
-/*
-
-
-            out.println("CaseSelectionne --> "+caseSelected.getColumn()+""+ caseSelected.getRow());
-            //1er cas -> la case est vide deplacement de la piece
-            if(caseClicked.isEmpty()){
-                out.println("case selected url piece--> "+caseSelected.getPiece().getUrlImage());
-                Deplacement deplacement = new Deplacement(caseSelected.getPiece(),null, caseSelected, caseClicked);
-                caseClicked.setEmpty(false);
-                caseSelected.setEmpty(true);
-                caseClicked.setPiece(caseSelected.getPiece());
-                caseSelected.setPiece(null);
-                caseSelected.setSelected(false);
-                caseSelected = null;
-                return deplacement;
-            }
-            //2eme cas -> la case n'est pas vide : mangeage de piece si adversaire
-            else{
-                if(caseClicked.getPiece().getColor() == joueurActuel){
-                    if(caseClicked.getRow() == caseSelected.getRow() && caseClicked.getColumn() == caseSelected.getColumn() ){
-                        //Si meme case -> deselection
-                        caseSelected = null;
-                    }
-                    //ne rien faire si les 2 pieces sont du meme joueur
-                    return null;
-                }
-                String[] namePieceSplit = caseClicked.getPiece().getName().split(" ");
-                if("ROI".equals(namePieceSplit[0])){
-                    //Fin de partie
-                    this.theEnd = true;
-
-                }
-                Deplacement deplacement = new Deplacement(caseSelected.getPiece(),caseClicked.getPiece(), caseSelected, caseClicked);
-                caseSelected.setEmpty(true);
-                caseClicked.setPiece(caseSelected.getPiece());
-                caseSelected.setPiece(null);
-                caseSelected.setSelected(false);
-                caseSelected = null;
-
-                return deplacement;
-            }
-        }
-*/
         }
     }
 
-    public ArrayList<Case> getCases() {
-        return cases;
-    }
 
     public Case getOneCase(int row, int column){
         for(Case oneCase : cases){

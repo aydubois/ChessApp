@@ -2,6 +2,12 @@ package audrey.chessapp.model;
 
 public class Case {
     private boolean empty = true;
+    private Piece piece = null;
+    private boolean selected = false;
+    private final String name;
+    private  final int column;
+    private  final int row;
+
 
     public boolean isEmpty() {
         return empty;
@@ -19,9 +25,6 @@ public class Case {
         this.empty = empty;
     }
 
-
-private Piece piece = null;
-
     public Piece getPiece() {
         return piece;
     }
@@ -33,10 +36,7 @@ private Piece piece = null;
             this.piece.setPresentCase(this);
     }
 
-    private boolean selected = false;
-    private final String name;
-    private  final int column;
-    private  final int row;
+
 
     public Case(String name){
         this.name = name;
