@@ -50,13 +50,13 @@ public class Pion extends Piece {
         int nbMax = firstMove ? 2 : 1;
         for (int i = 0; i < nbMax; i++) {
             System.out.println("nb boucle : "+ firstMove);
-            this.checkCaseOk(plateau, --row, column);
+            this.checkCaseSpecialOk(plateau, --row, column);
         }
     }
     private void checkGoDown(Plateau plateau, int row , int column){
         int nbMax = firstMove ? 2 : 1;
         for (int i = 0; i < nbMax; i++) {
-            this.checkCaseOk(plateau, ++row, column);
+            this.checkCaseSpecialOk(plateau, ++row, column);
         }
     }
     private void checkGoDiagLeftUp(Plateau plateau, int row , int column){
@@ -72,6 +72,7 @@ public class Pion extends Piece {
         this.checkCaseSpecial(plateau, ++row, ++column);
     }
 
+    //Special Diagonal
     private void checkCaseSpecial(Plateau plateau, int row, int column){
         //Si sortie du plateau -> pas ok
         if(row < 0 || column < 0 || row > 7 || column > 7)
@@ -79,6 +80,18 @@ public class Pion extends Piece {
 
         Case potentialCase  = plateau.getOneCase(row, column);
         if(potentialCase.getPiece() != null && potentialCase.getPiece().getColor() != this.color){
+            this.potentialCases.add(potentialCase);
+        }
+    }
+
+    //Special tout droit
+    private void checkCaseSpecialOk(Plateau plateau, int row, int column){
+        //Si sortie du plateau -> pas ok
+        if(row < 0 || column < 0 || row > 7 || column > 7)
+            return;
+
+        Case potentialCase  = plateau.getOneCase(row, column);
+        if(potentialCase.isEmpty()){
             this.potentialCases.add(potentialCase);
         }
     }
