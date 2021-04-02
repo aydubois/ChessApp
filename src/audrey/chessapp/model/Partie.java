@@ -139,16 +139,21 @@ public class Partie {
         Piece pieceJouee = lastDeplacement.getPieceDeplacee();
         Piece pieceMangee = lastDeplacement.getPieceMangee();
 
-       caseDepart.setPiece(caseFinal.getPiece());
-       caseDepart.setEmpty(false);
-       caseFinal.setPiece(pieceMangee);
-       if(pieceMangee == null)
-           caseFinal.setEmpty(true);
-       else
-           caseFinal.setEmpty(false);
+        if(lastDeplacement.isPromotion()){
+            caseDepart.setPiece(lastDeplacement.getPieceDeplaceeNonPromu());
+        }
+        else{
+            caseDepart.setPiece(caseFinal.getPiece());
+        }
+        caseDepart.setEmpty(false);
+        caseFinal.setPiece(pieceMangee);
+        if(pieceMangee == null)
+            caseFinal.setEmpty(true);
+        else
+            caseFinal.setEmpty(false);
 
-       changeJoueur();
-       deplacements.remove(lastDeplacement);
+        changeJoueur();
+        deplacements.remove(lastDeplacement);
         if(this.plateau.getCaseSelected() != null)
             this.plateau.setCaseSelected(null);
 

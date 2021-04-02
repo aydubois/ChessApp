@@ -23,6 +23,8 @@ public class Pion extends Piece {
         else
             this.firstMove = false;
         this.presentCase = presentCase;
+        if(this.presentCase.getRow() == 0 || this.presentCase.getRow() == 7)
+            this.promotion();
     }
 
     @Override
@@ -48,15 +50,19 @@ public class Pion extends Piece {
 
     private void checkGoUp(Plateau plateau, int row , int column){
         int nbMax = firstMove ? 2 : 1;
+        boolean itisOk = true;
         for (int i = 0; i < nbMax; i++) {
             System.out.println("nb boucle : "+ firstMove);
-            this.checkCaseSpecialOk(plateau, --row, column);
+            if(itisOk)
+                itisOk = this.checkCaseSpecialOk(plateau, --row, column);
         }
     }
     private void checkGoDown(Plateau plateau, int row , int column){
         int nbMax = firstMove ? 2 : 1;
+        boolean itisOk = true;
         for (int i = 0; i < nbMax; i++) {
-            this.checkCaseSpecialOk(plateau, ++row, column);
+            if(itisOk)
+                itisOk = this.checkCaseSpecialOk(plateau, ++row, column);
         }
     }
     private void checkGoDiagLeftUp(Plateau plateau, int row , int column){
@@ -85,14 +91,26 @@ public class Pion extends Piece {
     }
 
     //Special tout droit
-    private void checkCaseSpecialOk(Plateau plateau, int row, int column){
+    private boolean checkCaseSpecialOk(Plateau plateau, int row, int column){
         //Si sortie du plateau -> pas ok
         if(row < 0 || column < 0 || row > 7 || column > 7)
-            return;
+            return false;
 
         Case potentialCase  = plateau.getOneCase(row, column);
         if(potentialCase.isEmpty()){
             this.potentialCases.add(potentialCase);
+            return true;
         }
+        return false;
+    }
+
+    private void promotion(){
+        String newName = "";
+        if(this.color == Partie.joueurs.BLANC)
+            newName = "REINE BLANC";
+        else
+            newName = "REINE NOIR";
+        Piece reine = new Reine(newName, this.color, this.presentCase);
+        this.presentCase.setPiece(reine);
     }
 }

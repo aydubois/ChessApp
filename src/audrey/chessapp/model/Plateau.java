@@ -202,29 +202,45 @@ public class Plateau {
             } else {
                 //1er cas -> la case est vide deplacement de la piece
                 if (caseClicked.isEmpty()) {
-                    Deplacement deplacement = new Deplacement(caseSelected.getPiece(), null, caseSelected, caseClicked);
+                    String[] namePieceDeplaceeSplit = caseSelected.getPiece().getName().split(" ");
+
+                    Deplacement deplacement = new Deplacement(caseSelected.getPiece(), null, caseSelected, caseClicked, false);
                     caseClicked.setEmpty(false);
                     caseSelected.setEmpty(true);
                     caseClicked.setPiece(caseSelected.getPiece());
                     caseSelected.setPiece(null);
                     caseSelected.setSelected(false);
                     caseSelected = null;
+
+                    //Si promotion pion
+                    if("PION".equals(namePieceDeplaceeSplit[0]) && deplacement.getPieceDeplacee() != caseClicked.getPiece()){
+                        deplacement.setPieceDeplaceeNonPromu(deplacement.getPieceDeplacee());
+                        deplacement.setPieceDeplacee(caseClicked.getPiece());
+                        deplacement.setPromotion(true);
+                    }
                     return deplacement;
                 }
                 //2eme cas -> la case n'est pas vide : mangeage de piece si adversaire
                 else {
                     String[] namePieceSplit = caseClicked.getPiece().getName().split(" ");
+                    String[] namePieceDeplaceeSplit = caseSelected.getPiece().getName().split(" ");
                     //Si mangeage de roi -> Fin de partie
                     if ("ROI".equals(namePieceSplit[0])) {
                         this.theEnd = true;
                     }
-                    Deplacement deplacement = new Deplacement(caseSelected.getPiece(), caseClicked.getPiece(), caseSelected, caseClicked);
+                    Deplacement deplacement = new Deplacement(caseSelected.getPiece(), caseClicked.getPiece(), caseSelected, caseClicked, false);
                     caseSelected.setEmpty(true);
                     caseClicked.setPiece(caseSelected.getPiece());
                     caseSelected.setPiece(null);
                     caseSelected.setSelected(false);
                     caseSelected = null;
 
+                    //Si promotion pion
+                    if("PION".equals(namePieceDeplaceeSplit[0]) && deplacement.getPieceDeplacee() != caseClicked.getPiece()){
+                        deplacement.setPieceDeplaceeNonPromu(deplacement.getPieceDeplacee());
+                        deplacement.setPieceDeplacee(caseClicked.getPiece());
+                        deplacement.setPromotion(true);
+                    }
                     return deplacement;
                 }
             }
