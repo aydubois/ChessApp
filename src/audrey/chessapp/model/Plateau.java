@@ -15,17 +15,29 @@ public class Plateau {
     private ArrayList<Case> potentialMoves = new ArrayList<>();
 
 
-    public void initBord(){
+    /**
+     *  Creation des 64 cases et des pièces de chaque joueur
+     */
+    public void initBoard(){
         this.createAllBoxes();
         this.createAllPieces();
         this.theEnd = false;
     }
 
+    /**
+     * Recherche suivant la pièce sélectionnée des cases potentielles pour le futur déplacement
+     * Modification de la variable this.potentialMoves avec les nouvelles valeurs
+     * @param joueurActuel (BLANC || NOIR)
+     */
     public void getPotentialMoves(Partie.joueurs joueurActuel){
         Piece pieceSelected = caseSelected.getPiece();
         this.potentialMoves =   pieceSelected.getMove(this, joueurActuel);
     }
 
+    /**
+     * Création des 64 cases du jeu.
+     * Stockage de celles-ci dans la variable this.cases
+     */
     private void createAllBoxes(){
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -35,6 +47,11 @@ public class Plateau {
         }
     }
 
+    /**
+     * Creation des pieces de départ de chacun des joueurs suivant les coordonnées des cases
+     * Mise en place de la liaison entre les pièces et les cases.
+     * Ligne 0 et 1 : Pieces Noires / Ligne 6 et 7 : Pieces Blanches
+     */
     private void createAllPieces(){
         for(Case oneCase : cases){
             String name = "";
@@ -133,19 +150,17 @@ public class Plateau {
         }
     }
 
-    public Case getCaseSelected() {
-        return caseSelected;
-    }
-
-    public boolean isTheEnd() {
-        return theEnd;
-    }
-
-    public ArrayList<Case> getPotentialCases() {
-        return potentialMoves;
-    }
-
-    public Deplacement actionOnCase(int row, int column, Partie.joueurs joueurActuel){
+    /**
+     *
+     * @param row Coordonnée y de la case choisie
+     * @param column Coordonnée x de la case choisie
+     * @param joueurActuel enum (BLANC, NOIR)
+     * @return Déplacement
+     * @throws NullPointerException : Renvoie l'exception si pas de déplacement possible. Ne signifie pas forcément une erreur -> Nouvelle sélection/déselection de case
+     * Si une case est déjà sélectionnée -> verification que la dernière case cliquée fait partie des mouvements potentiels de la pièce
+     * Si aucune case selectionnée -> vérification de la possibilité de sélection de la dernière case
+     */
+    public Deplacement actionOnCase(int row, int column, Partie.joueurs joueurActuel) throws NullPointerException{
         Case caseClicked = null;
         for(Case oneCase : cases){
             if(oneCase.getRow() == row && oneCase.getColumn() == column){
@@ -154,8 +169,7 @@ public class Plateau {
             }
         }
         if(caseClicked == null){
-            out.println("ERROR ===> La case cliquée n'existe pas.");
-            return null;
+            throw  new NullPointerException("ERROR ===> La case cliquée n'existe pas.");
         }
         //Si aucune case sélectionnée
         if(caseSelected == null){
@@ -163,16 +177,17 @@ public class Plateau {
             //Vérification que la case cliquée n'est pas vide
             if(caseClicked.isEmpty()){
                 //ne rien faire si la case est vide.
-                return null ;
+                throw  new NullPointerException("ERROR ===> La case est vide.");
             }
             if (caseClicked.getPiece().getColor() != joueurActuel){
                 //ne rien faire si la piece ne correspond pas au joueur
-                return null;
+                throw  new NullPointerException("ERROR ===> La case cliquée possède une pièce du joueur adversaire.");
+
             }
             caseClicked.setSelected(true);
             caseSelected = caseClicked;
             this.getPotentialMoves(joueurActuel);
-            return null;
+            throw  new NullPointerException("Pas de déplacement. Seulement une sélection.");
         }
         //Si une case est sélectionnée
         else {
@@ -182,7 +197,7 @@ public class Plateau {
                     //Si meme case -> deselection
                     caseSelected = null;
                 }
-                return null;
+                throw  new NullPointerException("Déselection de la case.");
             } else {
                 //1er cas -> la case est vide deplacement de la piece
                 if (caseClicked.isEmpty()) {
@@ -215,7 +230,12 @@ public class Plateau {
         }
     }
 
-
+    /**
+     * Renvoie la case correspondante aux coordonnées voulues.
+     * @param row Coordonnée y de la case
+     * @param column Coordonnée x de la case
+     * @return Case avec ces coordonnées.
+     */
     public Case getOneCase(int row, int column){
         for(Case oneCase : cases){
             if(oneCase.getRow() == row && oneCase.getColumn() == column){
@@ -223,5 +243,27 @@ public class Plateau {
             }
         }
         return null;
+    }
+
+    /**
+     * @return Case  - la case déjà sélectionné par le joueur
+     */
+    public Case getCaseSelected() {
+        return caseSelected;
+    }
+
+    /**
+     * @return boolean - si c'est la fin de partie ou non
+     */
+    public boolean isTheEnd() {
+        return theEnd;
+    }
+
+    /**
+     *
+     * @return ArrayList<Case> - Liste de toutes les cases selectionnables par le joueur.
+     */
+    public ArrayList<Case> getPotentialCases() {
+        return potentialMoves;
     }
 }

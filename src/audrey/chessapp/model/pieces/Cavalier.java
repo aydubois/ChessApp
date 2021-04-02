@@ -25,6 +25,11 @@ public class Cavalier extends Piece {
         this.goDownLeft(plateau,rowActual, columnActual);
         this.goDownRight(plateau,rowActual, columnActual);
 
+        this.goLeftUp(plateau,rowActual, columnActual);
+        this.goLeftDown(plateau,rowActual, columnActual);
+        this.goRightUp(plateau,rowActual, columnActual);
+        this.goRightDown(plateau,rowActual, columnActual);
+
         return this.potentialCases;
     }
 
@@ -44,6 +49,25 @@ public class Cavalier extends Piece {
         row = row -2;
         this.checkMoveSpecial(plateau, row, ++column);
     }
+
+
+    private void goLeftUp(Plateau plateau, int row, int column){
+        column = column -2;
+        this.checkMoveSpecial(plateau, --row, column);
+    }
+    private void goLeftDown(Plateau plateau, int row, int column){
+        column = column -2;
+        this.checkMoveSpecial(plateau, ++row, column);
+    }
+    private void goRightUp(Plateau plateau, int row, int column){
+        column = column +2;
+        this.checkMoveSpecial(plateau, --row, column);
+    }
+    private void goRightDown(Plateau plateau, int row, int column){
+        column = column +2;
+        this.checkMoveSpecial(plateau, ++row, column);
+    }
+
 
     private void checkMoveSpecial(Plateau plateau, int row, int column){
         if(row < 0 || column < 0 || row > 7 || column > 7)

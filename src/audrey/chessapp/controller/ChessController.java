@@ -100,11 +100,8 @@ public class ChessController implements Initializable {
 
                     boolean selectedOk = this.partie.trySelected(pane.getId());
 
-                    //envoi de l'evenement à la partie -> c'est elle qui gère ce qu'elle doit faire.
-                    Deplacement deplacement = this.partie.clickOnCase(pane.getId());
-                    System.out.println(deplacement);
-                    if(deplacement != null ){
-                        //REcherche de l'image
+                    try{
+                        Deplacement deplacement = this.partie.createMove(pane.getId());
                         String urlName = deplacement.getPieceDeplacee().getUrlImage();
                         System.out.println("url image "+ urlName);
                         //recherche de la case depart
@@ -130,8 +127,7 @@ public class ChessController implements Initializable {
                         if(this.partie.isTheEnd()){
                             this.endOfGame();
                         }
-                    }else{
-                        System.out.println("blah");
+                    }catch(NullPointerException e ){
                         if(selectedOk)
                             this.changeBackground(pane);
                         else if(!this.partie.hasCaseSelected())
