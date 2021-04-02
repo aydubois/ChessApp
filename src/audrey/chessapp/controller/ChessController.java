@@ -315,6 +315,8 @@ public class ChessController implements Initializable {
                     + " : Piece déplacée -> "+dep.getPieceDeplacee().getName();
             if(dep.getPieceMangee() != null)
                 text += "  // Piece mangée -> "+dep.getPieceMangee().getName();
+            if(dep.isPromotion() && dep.getPieceDeplaceeNonPromu() != null)
+                text += "  // "+ dep.getPieceDeplacee().getName() + "  --> PROMOTION DU "+ dep.getPieceDeplaceeNonPromu().getName();
             text +=  "\n ***** \n";
         }
 
