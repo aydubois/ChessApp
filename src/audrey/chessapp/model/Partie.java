@@ -57,7 +57,7 @@ public class Partie {
     public boolean trySelected(String idPane){
         int row = this.getRow(idPane);
         int column = this.getColumn(idPane);
-        Case caseS = this.plateau.getCase(row, column);
+        Case caseS = this.plateau.getOneCase(row, column);
         if (caseS == null){
             return false;
         }
@@ -83,5 +83,9 @@ public class Partie {
 
     private void changeJoueur(){
         this.joueurActuel = this.joueurActuel == joueurs.BLANC ? joueurs.NOIR : joueurs.BLANC;
+    }
+
+    public ArrayList<Case> getPotentialMoves(){
+        return this.plateau.getPotentialCases();
     }
 }

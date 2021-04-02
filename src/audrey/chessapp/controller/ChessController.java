@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 
 public class ChessController implements Initializable {
     private final String backgroundColorSelected = "-fx-background-color:#b092b0;";
+    private final String backgroundColorSelectable = "-fx-background-color:#b497c9;";
     private final String backgroundColorWhite = "-fx-background-color:white;";
     private final String backgroundColorGrey = "-fx-background-color:grey;";
 
@@ -122,31 +123,31 @@ public class ChessController implements Initializable {
                                 break;
                             }
                         }
-                        // recherche pane depart pour supprimer le background_selected
-                        for(Pane paneD : panes){
-                            if(paneD.getId().equals("paneCase"+caseDepart.getColumn()+""+caseDepart.getRow())){
-                                this.changeBackground(paneD, false);
-                                break;
-                            }
-                        }
+                        // recherche pane depart + selectable pour supprimer le background
+                        this.removeBackgroundSelectable();
+
                         this.changeLabel();
                         if(this.partie.isTheEnd()){
                             this.endOfGame();
                         }
                     }else{
                         System.out.println("blah");
-                        this.changeBackground(pane, selectedOk);
+                        if(selectedOk)
+                            this.changeBackground(pane);
+                        else
+                            this.removeBackgroundSelectable();
                     }
                 }
             });
         }
     }
 
-    private void changeBackground(Pane pane, boolean selectedOk){
-        if(selectedOk){
+    private void changeBackground(Pane pane){
             pane.setStyle(backgroundColorSelected);
-        }else{
-            //Verifier que la couleur est bien celle de base (si jamais une case était selectionnée puis déselectionnée)
+            this.checkPanesSelectables();
+    }
+    private void removeBackgroundSelectable(){
+        for (Pane pane : panes){
             int row = this.getRow(pane.getId());
             int column = this.getColumn(pane.getId());
             if(row%2 == 0 && column%2 == 0 && pane.getStyle() != backgroundColorWhite){
@@ -163,6 +164,23 @@ public class ChessController implements Initializable {
             }
         }
     }
+    private void checkPanesSelectables(){
+        ArrayList<Case> potentialCases = this.partie.getPotentialMoves();
+        if(potentialCases != null){
+            for (Pane pane : panes){
+                int rowPane = this.getRow(pane.getId());
+                int columnPane = this.getColumn(pane.getId());
+                for (Case caseP : potentialCases){
+                    int rowCase = caseP.getRow();
+                    int columnCase = caseP.getColumn();
+                    if(rowCase == rowPane && columnCase == columnPane){
+                        pane.setStyle(backgroundColorSelectable);
+                    }
+                }
+            }
+        }
+    }
+
     private int getRow(String name){
         String[] nameSplit = name.split("");
         return Integer.parseInt(nameSplit[nameSplit.length-1]);

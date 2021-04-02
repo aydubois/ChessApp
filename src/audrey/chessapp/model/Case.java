@@ -27,7 +27,10 @@ private Piece piece = null;
     }
 
     public void setPiece(Piece piece) {
+
         this.piece = piece;
+        if(piece != null)
+            this.piece.setPresentCase(this);
     }
 
     private boolean selected = false;
