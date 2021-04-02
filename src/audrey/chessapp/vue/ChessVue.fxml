@@ -439,5 +439,7 @@
             <Font name="Tahoma Bold" size="18.0" />
          </font>
       </Label>
+      <Label layoutX="51.0" layoutY="827.0" prefHeight="17.0" prefWidth="243.0" text="Historiques des derniers déplacements : " />
+      <Label fx:id="labelHistorique" layoutX="51.0" layoutY="867.0" prefHeight="115.0" prefWidth="689.0" />
    </children>
 </AnchorPane>

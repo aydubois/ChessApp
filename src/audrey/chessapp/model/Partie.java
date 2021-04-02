@@ -129,6 +129,10 @@ public class Partie {
         return this.plateau.getCaseSelected() == null ? false : true;
     }
 
+    public ArrayList<Deplacement> getDeplacements() {
+        return deplacements;
+    }
+
     public Deplacement cancelLastMove(){
         if(deplacements.size() == 0 || this.theEnd)
             return null;

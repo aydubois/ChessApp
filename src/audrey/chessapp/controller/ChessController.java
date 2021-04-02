@@ -51,6 +51,9 @@ public class ChessController implements Initializable {
     @FXML
     private Label labelTitle;
 
+    @FXML
+    private Label labelHistorique;
+
 
     private Partie partie = new Partie();
     private Plateau plateau;
@@ -97,6 +100,7 @@ public class ChessController implements Initializable {
         for(Pane pane : panes){
 
             pane.setOnMouseClicked(mouseEvent -> {
+
                 if(!this.partie.isTheEnd()){
 
                     boolean selectedOk = this.partie.trySelected(pane.getId());
@@ -135,6 +139,7 @@ public class ChessController implements Initializable {
                             this.removeBackgroundSelectable();
                     }
                 }
+                this.changeHistoriqueMouvement();
             });
         }
     }
@@ -295,5 +300,27 @@ public class ChessController implements Initializable {
             this.changeLabel();
 
         });
+    }
+
+    private void changeHistoriqueMouvement(){
+        ArrayList<Deplacement> alldeplacements = this.partie.getDeplacements();
+        ArrayList<Deplacement> only2Last = new ArrayList<>();
+        if(alldeplacements.size() >= 2)
+            only2Last.add(alldeplacements.get(alldeplacements.size()-2));
+        if(alldeplacements.size() >= 1)
+            only2Last.add(alldeplacements.get(alldeplacements.size()-1));
+        String text = "\n ***** \n";
+        for (Deplacement dep : only2Last){
+            text += " Case"+dep.getCaseDepart().getColumn() +""+dep.getCaseDepart().getRow() + "-> Case"+dep.getCaseFinal().getColumn() +""+dep.getCaseFinal().getRow()
+                    + " : Piece déplacée -> "+dep.getPieceDeplacee().getName();
+            if(dep.getPieceMangee() != null)
+                text += "  // Piece mangée -> "+dep.getPieceMangee().getName();
+            text +=  "\n ***** \n";
+        }
+
+
+
+        this.labelHistorique.setWrapText(true);
+        this.labelHistorique.setText(text);
     }
 }
