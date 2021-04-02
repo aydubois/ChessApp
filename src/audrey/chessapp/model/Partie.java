@@ -58,7 +58,9 @@ public class Partie {
         //Tous les autres cas -> false
         return false;
     }
-
+    public boolean hasCaseSelected(){
+        return this.plateau.getCaseSelected() == null ? false : true;
+    }
 
     private int getRow(String name){
         String[] nameSplit = name.split("");

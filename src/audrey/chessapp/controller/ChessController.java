@@ -134,7 +134,7 @@ public class ChessController implements Initializable {
                         System.out.println("blah");
                         if(selectedOk)
                             this.changeBackground(pane);
-                        else
+                        else if(!this.partie.hasCaseSelected())
                             this.removeBackgroundSelectable();
                     }
                 }
