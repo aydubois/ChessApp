@@ -76,6 +76,8 @@ public class ChessController implements Initializable {
         this.addEventNewGame();
 
         this.addEventQuitGame();
+
+        this.addEventCancelMove();
     }
 
     private void addEventNewGame(){
@@ -83,7 +85,6 @@ public class ChessController implements Initializable {
         this.buttonNouvellePartie.setOnMouseClicked(mouseEvent -> {
             this.partie.newGame();
             this.changeLabel();
-            //Placement des images
             //Ajout des evenement seulement s'il n'existent pas déjà
             if(paneCase00.getOnMouseClicked() == null)
                 this.addEventClickCase();
@@ -261,5 +262,38 @@ public class ChessController implements Initializable {
 
     private void addEventQuitGame(){
         buttonQuitter.setOnMouseClicked(event->{System.exit(0);});
+    }
+
+    private void addEventCancelMove(){
+        buttonAnnuler.setOnMouseClicked(event->{
+           Deplacement lastDeplacement = this.partie.cancelLastMove();
+            if(lastDeplacement == null)
+                return;
+
+            String urlNamePieceDeplacee = lastDeplacement.getPieceDeplacee().getUrlImage();
+            String urlNamePieceMangee = lastDeplacement.getPieceMangee() != null ? lastDeplacement.getPieceMangee().getUrlImage() : null;
+            Case caseDepart = lastDeplacement.getCaseDepart();
+            Case caseFinal = lastDeplacement.getCaseFinal();
+
+            for(ImageView imageV : imageViews){
+                if(imageV.getId().equals("imageView"+caseDepart.getColumn()+""+caseDepart.getRow())){
+                    imageV.setImage(new Image(getClass().getResource(urlNamePieceDeplacee).toExternalForm()));
+                    break;
+                }
+            }
+            //recherche de la case final
+            for(ImageView imageV : imageViews){
+                if(imageV.getId().equals("imageView"+caseFinal.getColumn()+""+caseFinal.getRow())){
+                    if(urlNamePieceMangee == null)
+                        imageV.setImage(null);
+                    else
+                        imageV.setImage(new Image(getClass().getResource(urlNamePieceMangee).toExternalForm()));
+                    break;
+                }
+            }
+            this.removeBackgroundSelectable();
+            this.changeLabel();
+
+        });
     }
 }

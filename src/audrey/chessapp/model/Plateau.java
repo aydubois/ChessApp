@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import static java.lang.System.*;
 
 public class Plateau {
-    private final ArrayList<Case> cases = new ArrayList<>();
-    private final ArrayList<Piece> piecesBlanches = new ArrayList<>();
-    private final ArrayList<Piece> piecesNoires = new ArrayList<>();
+    private ArrayList<Case> cases = new ArrayList<>();
+    private ArrayList<Piece> piecesBlanches = new ArrayList<>();
+    private ArrayList<Piece> piecesNoires = new ArrayList<>();
     private Case caseSelected = null;
     private boolean theEnd = false;
     private ArrayList<Case> potentialMoves = new ArrayList<>();
@@ -19,6 +19,7 @@ public class Plateau {
      *  Creation des 64 cases et des pièces de chaque joueur
      */
     public void initBoard(){
+        this.cases = new ArrayList<>();
         this.createAllBoxes();
         this.createAllPieces();
         this.theEnd = false;
@@ -250,6 +251,10 @@ public class Plateau {
      */
     public Case getCaseSelected() {
         return caseSelected;
+    }
+
+    public void setCaseSelected(Case caseSelected) {
+        this.caseSelected = caseSelected;
     }
 
     /**

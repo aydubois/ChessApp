@@ -9,12 +9,18 @@ import java.util.ArrayList;
 
 public class Pion extends Piece {
     private boolean firstMove = true;
+    private final int rowInitial;
+    private final int columnInitial;
     public Pion(String name, Partie.joueurs color, Case presentCase) {
         super(name, color, presentCase);
+        this.rowInitial = presentCase.getRow();
+        this.columnInitial = presentCase.getColumn();
     }
     @Override
     public void setPresentCase(Case presentCase) {
-        if(firstMove && presentCase != this.presentCase)
+        if(presentCase.getRow() == rowInitial && presentCase.getColumn() == columnInitial) // Si retour en arriere (Annuler)
+            this.firstMove = true;
+        else
             this.firstMove = false;
         this.presentCase = presentCase;
     }

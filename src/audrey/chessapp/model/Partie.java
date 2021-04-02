@@ -1,5 +1,8 @@
 package audrey.chessapp.model;
 
+import audrey.chessapp.model.pieces.Pion;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Partie {
@@ -16,8 +19,9 @@ public class Partie {
      */
     public void newGame(){
         this.plateau.initBoard();
+        this.deplacements = new ArrayList<>();
         this.theEnd = false;
-        joueurActuel = joueurs.BLANC;
+        this.joueurActuel = joueurs.BLANC;
     }
 
     /**
@@ -125,5 +129,30 @@ public class Partie {
         return this.plateau.getCaseSelected() == null ? false : true;
     }
 
+    public Deplacement cancelLastMove(){
+        if(deplacements.size() == 0 || this.theEnd)
+            return null;
+
+        Deplacement lastDeplacement = deplacements.get(deplacements.size()-1);
+        Case caseDepart = lastDeplacement.getCaseDepart();
+        Case caseFinal = lastDeplacement.getCaseFinal();
+        Piece pieceJouee = lastDeplacement.getPieceDeplacee();
+        Piece pieceMangee = lastDeplacement.getPieceMangee();
+
+       caseDepart.setPiece(caseFinal.getPiece());
+       caseDepart.setEmpty(false);
+       caseFinal.setPiece(pieceMangee);
+       if(pieceMangee == null)
+           caseFinal.setEmpty(true);
+       else
+           caseFinal.setEmpty(false);
+
+       changeJoueur();
+       deplacements.remove(lastDeplacement);
+        if(this.plateau.getCaseSelected() != null)
+            this.plateau.setCaseSelected(null);
+
+       return lastDeplacement;
+    }
 
 }

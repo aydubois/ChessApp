@@ -25,4 +25,8 @@ public class Deplacement {
     public Piece getPieceDeplacee() {
         return pieceDeplacee;
     }
+
+    public Piece getPieceMangee() {
+        return pieceMangee;
+    }
 }
